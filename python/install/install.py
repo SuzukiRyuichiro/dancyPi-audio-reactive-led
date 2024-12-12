@@ -14,11 +14,12 @@ def install_dependencies():
     print("================== Completed Installing PIP ==================")
 
     print("================== Start Updating PIP ==================")
-    os.system("sudo pip3 install --upgrade pip")
+    os.system("sudo pip3 install --upgrade pip --break-system-packages")
     print("================== Completed Updating PIP ==================")
 
     print("================== Start Installing Setuptools and Libatlas ==================")
-    os.system("sudo apt install python-setuptools libatlas-base-dev -y")
+    os.system("sudo apt install libatlas-base-dev -y")
+    os.system("sudo pip3 install setuptools --break-system-packages")
     print("================== Completed Installing Setuptools and Libatlas ==================")
 
     print("================== Start Installing Fortran ==================")
@@ -26,16 +27,16 @@ def install_dependencies():
     print("================== Completed Installing Fortran ==================")
 
     print("================== Start Installing Numpy, Scipy, PyAudio, PyQtgraph ==================")
-    os.system("sudo apt install python-numpy python-scipy python-pyaudio python-pyqtgraph -y")
-    os.system("sudo pip3 install numpy scipy==1.4.1 pyaudio pyqtgraph")
+    # os.system("sudo apt install python-numpy python-scipy python-pyaudio python-pyqtgraph -y")
+    os.system("sudo pip3 install numpy scipy==1.4.1 pyaudio pyqtgraph --break-system-packages")
     print("================== Completed Installing Numpy, Scipy, PyAudio, PyQtgraph ==================")
 
     print("================== Start Installing rpi_ws281x ==================")
-    os.system("sudo pip3 install rpi_ws281x")
+    os.system("sudo pip3 install rpi_ws281x --break-system-packages")
     print("================== Completed Installing rpi_ws281x ==================")
 
     print("================== Start Installing Pydub for playing audio ==================")
-    os.system("sudo pip3 install pydub")
+    os.system("sudo pip3 install pydub --break-system-packages")
     print("================== Completed Installing Pydub ==================")
 
 
