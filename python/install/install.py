@@ -91,7 +91,7 @@ def edit_alsa_conf():
     print("================== Installing DancyPi Service ==================")
 
 
-install_dependencies()
+# install_dependencies()
 replace_asound()
 edit_modules()
 #edit_alsa_conf()
