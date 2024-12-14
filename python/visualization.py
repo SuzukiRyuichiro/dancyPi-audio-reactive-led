@@ -220,9 +220,15 @@ def visualize_spectrum(y):
     g = np.abs(diff)
     b = b_filt.update(np.copy(y))
     # Mirror the color channels for symmetric output
-    r = np.concatenate((r[::-1], r))
-    g = np.concatenate((g[::-1], g))
-    b = np.concatenate((b[::-1], b))
+    red_weight = 1.2    # Boost red
+    green_weight = 1.1  # Boost green
+    blue_weight = 0.8   # Reduce blue
+
+    # Scale the channels
+    r = np.concatenate((r[::-1], r)) * red_weight
+    g = np.concatenate((g[::-1], g)) * green_weight
+    b = np.concatenate((b[::-1], b)) * blue_weight
+
     output = np.array([r, g,b]) * 255
     return output
 
@@ -247,7 +253,7 @@ def microphone_update(audio_samples):
     y_roll[:-1] = y_roll[1:]
     y_roll[-1, :] = np.copy(y)
     y_data = np.concatenate(y_roll, axis=0).astype(np.float32)
-    
+
     vol = np.max(np.abs(y_data))
     if vol < config.MIN_VOLUME_THRESHOLD:
         print('No audio input. Volume below threshold. Volume:', vol)
@@ -285,7 +291,7 @@ def microphone_update(audio_samples):
             b_curve.setData(y=led.pixels[2])
     if config.USE_GUI:
         app.processEvents()
-    
+
     if config.DISPLAY_FPS:
         fps = frames_per_second()
         if time.time() - 0.5 > prev_fps_update:
