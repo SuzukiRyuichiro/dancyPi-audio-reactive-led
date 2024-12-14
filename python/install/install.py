@@ -1,6 +1,6 @@
 # install.py
-# Version: 1.0.0
-# Installs dependences needed for Dancy Pi
+# Version: 1.1.0
+# Installs dependencies needed for Dancy Pi
 # Author: Nazmus Nasir
 # Website: https://www.easyprogramming.net
 
@@ -14,11 +14,12 @@ def install_dependencies():
     print("================== Completed Installing PIP ==================")
 
     print("================== Start Updating PIP ==================")
-    os.system("sudo pip3 install --upgrade pip")
+    os.system("sudo pip3 install --upgrade pip --break-system-packages")
     print("================== Completed Updating PIP ==================")
 
     print("================== Start Installing Setuptools and Libatlas ==================")
-    os.system("sudo apt install python-setuptools libatlas-base-dev -y")
+    os.system("sudo apt install libatlas-base-dev -y")
+    os.system("sudo pip3 install setuptools --break-system-packages")
     print("================== Completed Installing Setuptools and Libatlas ==================")
 
     print("================== Start Installing Fortran ==================")
@@ -26,19 +27,30 @@ def install_dependencies():
     print("================== Completed Installing Fortran ==================")
 
     print("================== Start Installing Numpy, Scipy, PyAudio, PyQtgraph ==================")
-    os.system("sudo apt install python-numpy python-scipy python-pyaudio python-pyqtgraph -y")
-    os.system("sudo pip3 install numpy scipy==1.4.1 pyaudio pyqtgraph")
+    # os.system("sudo apt install python-numpy python-scipy python-pyaudio python-pyqtgraph -y")
+    os.system("sudo pip3 install numpy scipy==1.4.1 pyaudio pyqtgraph --break-system-packages")
     print("================== Completed Installing Numpy, Scipy, PyAudio, PyQtgraph ==================")
 
     print("================== Start Installing rpi_ws281x ==================")
-    os.system("sudo pip3 install rpi_ws281x")
+    os.system("sudo pip3 install rpi_ws281x --break-system-packages")
     print("================== Completed Installing rpi_ws281x ==================")
+
+    print("================== Start Installing Pydub for playing audio ==================")
+    os.system("sudo pip3 install pydub --break-system-packages")
+    print("================== Completed Installing Pydub ==================")
 
 
 def replace_asound():
     print("================== Copying asound.conf ==================")
-    copy2('asound.conf', '/etc/asound.conf')
+    copy2('sc_asound.conf', '/etc/asound.conf')
     print("================== Completed copying to /etc/asound.conf ==================")
+
+
+def edit_modules():
+    print("================== Editing Modules with snd-aloop ==================")
+    with open('/etc/modules', 'a+') as f:
+        f.write('snd-aloop')
+    print("================== Completed Editing Modules with snd-aloop ==================")
 
 
 def edit_alsa_conf():
@@ -49,8 +61,8 @@ def edit_alsa_conf():
     print("================== Replacing text in alsa.conf ==================")
     with open('/usr/share/alsa/alsa.conf', 'r') as file:
         filedata = file.read()
-        filedata = filedata.replace("defaults.ctl.card 0", "defaults.ctl.card 1")
-        filedata = filedata.replace("defaults.pcm.card 0", "defaults.pcm.card 1")
+        # filedata = filedata.replace("defaults.ctl.card 0", "defaults.ctl.card 1")
+        # filedata = filedata.replace("defaults.pcm.card 0", "defaults.pcm.card 1")
         filedata = filedata.replace("pcm.front cards.pcm.front", "# pcm.front cards.pcm.front")
         filedata = filedata.replace("pcm.rear cards.pcm.rear", "# pcm.rear cards.pcm.rear")
         filedata = filedata.replace("pcm.center_lfe cards.pcm.center_lfe", "# pcm.center_lfe cards.pcm.center_lfe")
@@ -71,7 +83,17 @@ def edit_alsa_conf():
 
     print("================== Completed replacing text in alsa.conf ==================")
 
+    print("================== Installing DancyPi Service ==================")
+    copy2('dancypi.service', '/etc/systemd/system/dancypi.service')
+    os.system('sudo systemctl daemon-reload')
+    os.system('sudo systemctl enable dancypi.service')
+    os.system('sudo service dancypi start')
+    print("================== Installing DancyPi Service ==================")
 
-install_dependencies()
+
+# install_dependencies()
 replace_asound()
-edit_alsa_conf()
+edit_modules()
+#edit_alsa_conf()
+
+print("INSTALLATION COMPLETE - PLEASE REBOOT")

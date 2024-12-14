@@ -4,6 +4,7 @@ from __future__ import division
 import platform
 import numpy as np
 import config
+import pdb;
 
 # ESP8266 uses WiFi communication
 if config.DEVICE == 'esp8266':
@@ -104,8 +105,8 @@ def _update_pi():
         # Ignore pixels if they haven't changed (saves bandwidth)
         if np.array_equal(p[:, i], _prev_pixels[:, i]):
             continue
-            
-        strip._led_data[i] = int(rgb[i])
+
+        strip.setPixelColor(i, int(rgb[i]))
     _prev_pixels = np.copy(p)
     strip.show()
 
@@ -114,7 +115,7 @@ def _update_blinkstick():
         This function updates the LED strip with new values.
     """
     global pixels
-    
+
     # Truncate values and cast to integer
     pixels = np.clip(pixels, 0, 255).astype(int)
     # Optional gamma correction
